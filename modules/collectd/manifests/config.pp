@@ -19,6 +19,13 @@ class collectd::config {
     recurse => true,
   }
 
+  file { '/usr/share/collectd/docker-collectd-plugin':
+    ensure  => directory,
+    purge   => true,
+    recurse => true,
+    source  => 'puppet:///modules/collectd/usr/share/collectd/docker-collectd-plugin',
+  }
+
   # types are needed by both server and client, so can't live in plugin classes
   # See https://collectd.org/documentation/manpages/types.db.5.shtml
   file { '/usr/share/collectd/types.db.rabbitmq':

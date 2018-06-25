@@ -39,6 +39,13 @@ class govuk::node::s_development (
   $app_classes = regsubst($apps, '^', 'govuk::apps::')
   include $app_classes
 
+  vcsrepo { '/usr/share/collectd/docker-collectd-plugin':
+    ensure   => present,
+    provider => git,
+    source   => 'https://github.com/lebauce/docker-collectd-plugin.git',
+    revision => 'c3edc64555f35d8ffcc9aee23b69c289e8f309fb',
+  }
+
   # Check when Puppet last ran and recommend that people run it if it's
   # out-of-date by >=3 days.
   file { '/etc/profile.d/last_puppet_run.sh':

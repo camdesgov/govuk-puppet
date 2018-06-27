@@ -11,6 +11,7 @@
 class puppet::puppetdb {
   include '::puppet::repository'
   include '::govuk_postgresql::server::standalone'
+  include '::govuk_postgresql::backup'
 
   $database_password = hiera('puppetdb_postgres_password')
   $java_args = '-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/puppetdb/puppetdb-oom.hprof -Djava.security.egd=file:/dev/urandom'

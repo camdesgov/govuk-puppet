@@ -2,18 +2,20 @@
 #
 # Installs and configures PuppetDB
 #
-# === Hiera lookups
+# === Parameters
 #
-# [*puppetdb_postgres_password*]
+# [*database_password*]
 #   The password of the PostgreSQL database
 #   This is used both to create the database and to configure PuppetDB.
 #
-class puppet::puppetdb {
+class puppet::puppetdb (
+  $database_password,
+)
+{
   include '::puppet::repository'
   include '::govuk_postgresql::server::standalone'
   include '::govuk_postgresql::backup'
 
-  $database_password = hiera('puppetdb_postgres_password')
   $java_args = '-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/puppetdb/puppetdb-oom.hprof -Djava.security.egd=file:/dev/urandom'
 
   govuk_postgresql::db { 'puppetdb':

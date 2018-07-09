@@ -1,0 +1,31 @@
+#!/bin/bash
+set -eu
+
+SUPPORTED_DISTROS=("trusty")
+distro="$(lsb_release --codename --short)"
+
+if ! [[ "${SUPPORTED_DISTROS[*]}" =~ $distro ]]
+then
+  echo "This distro isn't supported by this bootstrap script yet - aborting"
+  exit 1
+fi
+
+curl --silent --show-error --fail \
+  --output /var/cache/apt/archives/puppetlabs-release-trusty.deb \
+  http://apt.puppet.com/puppetlabs-release-trusty.deb
+dpkg -i /var/cache/apt/archives/puppetlabs-release-trusty.deb
+apt-get update
+apt-get -y install puppet hiera facter
+
+if [[ -v INSTALL_GEMS ]]
+then
+  # We only expect this to be done on Puppet Masters or where `puppet apply` is
+  # used (e.g. Vagrant VMs).
+  # We really don't want to be compiling Gems but this should go away with
+  # Puppet 5
+  apt-get -y install build-essential ruby-dev
+  gem install bundler
+  cd "$(dirname "${BASH_SOURCE[0]}")"
+  bundle install
+fi
+

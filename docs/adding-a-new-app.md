@@ -1,7 +1,7 @@
 [rds-database-management]: https://github.com/alphagov/govuk-aws/blob/master/doc/guides/rds-database-management.md
 [govuk-secrets]: https://github.com/alphagov/govuk-secrets
 
-# Adding a new app to GOV.UK (Rails+PostgreSQL)
+# Adding a new app to GOV.UK (Rails + PostgreSQL)
 
 Create a new file in `modules/govuk/manifests/apps` named `my_app.pp`:
 
@@ -32,17 +32,15 @@ Create a new file in `modules/govuk/manifests/apps` named `my_app.pp`:
 # [*db_hostname*]
 #   The hostname of the database server to use for in DATABASE_URL environment variable
 #
-# [*db_username*]
-#   The username to use for the DATABASE_URL environment variable
-#
 # [*db_password*]
-#   The password to use for the DATABASE_URL environment variable
+#   The password to use for the DATABASE_URL environment variable (in govuk-secrets)
 #
 # [*db_name*]
 #   The database name to use for the DATABASE_URL environment variable
 #
+# Use snake case for puppet code and database names (e.g. content_publisher)
 class govuk::apps::myapp (
-  $port = 99999999,
+  $port = '99999999',
   $enabled = false,
   $secret_key_base = undef,
   $sentry_dsn = undef,
@@ -71,32 +69,32 @@ class govuk::apps::myapp (
     asset_pipeline    => true,
   }
 
-  govuk::app::Envvar {
-    app               => $app_name,
-    ensure            => $ensure,
-    notify_service    => $enabled,
+  Govuk::App::Envvar {
+    app            => $app_name,
+    ensure         => $ensure,
+    notify_service => $enabled,
   }
 
   govuk::app::envvar {
     "${title}-SECRET_KEY_BASE":
-      varname        => 'SECRET_KEY_BASE',
-      value          => $secret_key_base;
+      varname => 'SECRET_KEY_BASE',
+      value   => $secret_key_base;
     "${title}-OAUTH_ID":
-      varname        => 'OAUTH_ID',
-      value          => $oauth_id;
+      varname => 'OAUTH_ID',
+      value   => $oauth_id;
     "${title}-OAUTH_SECRET":
-      varname        => 'OAUTH_SECRET',
-      value          => $oauth_secret;
+      varname => 'OAUTH_SECRET',
+      value   => $oauth_secret;
   }
 
   if $::govuk_node_class !~ /^development$/ {
     govuk::app::envvar::database_url { $app_name:
-      type           => 'postgresql',
-      username       => $app_name,
-      password       => $db_password,
-      host           => $db_hostname,
-      database       => $db_name,
-   }
+      type     => 'postgresql',
+      username => $app_name,
+      password => $db_password,
+      host     => $db_hostname,
+      database => $db_name,
+    }
   }
 }
 ```
@@ -148,7 +146,7 @@ govuk::apps::myapp::db::rds: true
 # use the module default instead when production-ready
 govuk::apps::myapp::enabled: true
 
-# hieradata/integration.yaml
+# hieradata_aws/integration.yaml
 # use the module default instead when production-ready
 govuk::apps::myapp::enabled: true
 
@@ -161,7 +159,6 @@ Check if your app appears in these files (use existing apps as examples).
 
   * hieradata/common.yaml (node_class)
   * hieradata/common.yaml (deployable_applications)
-  * hieradata/common.yaml (govuk_ci::master::pipeline_jobs)
   * hieradata/common.yaml (grafana::dashboards::deployment_applications)
   * hieradata/common.yaml (hosts::production::backend::app_hostnames)
   * hieradata_aws/common.yaml (node_class)

@@ -57,6 +57,12 @@ define govuk_env_sync::task(
     group   => $govuk_env_sync::user,
     content => template('govuk_env_sync/govuk_env_sync_job.conf.erb'),
   }
+  
+file { $temppath:
+    mode  => '0775',
+    owner => $govuk_env_sync::user,
+    group => $govuk_env_sync::user,
+  }
 
   $synccommand = shellquote([
     '/usr/bin/ionice','-c','2','-n','6',

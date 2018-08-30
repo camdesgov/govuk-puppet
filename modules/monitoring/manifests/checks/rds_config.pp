@@ -20,7 +20,6 @@
 #  Defines the percentage of free usable memory that will trigger a critical alert.
 #
 define monitoring::checks::rds_config (
-  $region = undef,
   $cpu_warning = 80,
   $cpu_critical = 90,
   $memory_warning = 20,

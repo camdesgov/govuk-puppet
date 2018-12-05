@@ -10,9 +10,10 @@ import json
 import random
 import string
 import sys
+import os
 import urllib3
 import boto3
-from urllib.parse import urlencode
+from urllib
 from string import Template
 
 ### Variables
@@ -183,7 +184,7 @@ parser.add_option(
 )
 
 if __name__ == '__main__':
-    if not os.path.exists(aws_config_path) and node_profile equal 'blue-jumpbox':
+    if not os.path.exists(aws_config_path) and node_profile is 'blue-jumpbox':
         create_creds()
     main()
 

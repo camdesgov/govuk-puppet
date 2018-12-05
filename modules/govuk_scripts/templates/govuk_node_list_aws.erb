@@ -184,7 +184,7 @@ parser.add_option(
 )
 
 if __name__ == '__main__':
-    if not os.path.exists(aws_config_path) and node_profile is 'blue-jumpbox':
+    if not os.path.exists(aws_config_path) and node_profile.data == 'blue-jumpbox':
         create_creds()
     main()
 

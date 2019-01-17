@@ -3,7 +3,7 @@
 # Sets up nginx for Icinga
 #
 class icinga::nginx {
-  include ::nginx
+  contain nginx
 
   nginx::config::ssl { 'nagios':
     certtype => 'wildcard_publishing',

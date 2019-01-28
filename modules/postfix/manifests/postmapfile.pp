@@ -4,7 +4,9 @@ define postfix::postmapfile(
 ) {
   $filename = "/etc/postfix/${title}"
 
-  Package['postfix']
+  include postfix::package
+
+  Class['postfix::package']
   -> file { $filename:
     ensure  => present,
     mode    => '0644',

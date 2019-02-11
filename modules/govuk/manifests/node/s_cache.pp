@@ -106,4 +106,11 @@ class govuk::node::s_cache (
     host_name => $::fqdn,
     notes_url => monitoring_docs_url(nginx-high-conn-writing-upstream-indicator-check),
   }
+
+  limits::limits { 'deploy_nofile':
+    ensure     => present,
+    user       => 'deploy',
+    limit_type => 'nofile',
+    both       => 262144,
+  }
 }

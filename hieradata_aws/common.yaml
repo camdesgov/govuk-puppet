@@ -494,6 +494,7 @@ govuk::apps::email_alert_api::email_address_override_whitelist:
   - ruben.arakelyan@digital.cabinet-office.gov.uk
   - thomas.leese@digital.cabinet-office.gov.uk
   - tijmen.brommet@digital.cabinet-office.gov.uk
+  - vanita.barrett@digital.cabinet-office.gov.uk
 
 govuk::apps::email_alert_service::enabled: true
 govuk::apps::email_alert_service::rabbitmq_hosts:
@@ -1058,7 +1059,7 @@ grafana::dashboards::application_dashboards:
   content-audit-tool:
     show_sidekiq_graphs: true
     has_workers: true
-  content-data-admin: 
+  content-data-admin:
     show_sidekiq_graphs: true
     has_workers: true
   content-performance-manager:

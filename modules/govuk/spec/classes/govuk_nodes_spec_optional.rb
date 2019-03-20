@@ -50,18 +50,16 @@ ENV.fetch('classes').split(",").each do |class_name|
 
   describe "govuk::node::s_#{class_name}", :type => :class do
     let(:node) { "#{node_hostname}-1.example.com" }
-    let(:facts) do
+    let(:base_facts) do
       {
         :environment => (class_name =~ /^development$/ ? "development" : 'vagrant'),
         :concat_basedir => '/var/lib/puppet/concat/',
         :kernel => 'Linux',
         :memorysize =>  '3.86 GB',
         :memorysize_mb => 3953.43,
-        :aws_migration => (class_name =~ /db_admin/ ? true : false),
         :vdc => 'example',
       }
     end
-
     # Pull in some required bits from top-level site.pp
     let(:pre_condition) do
       <<-EOT
@@ -76,6 +74,9 @@ ENV.fetch('classes').split(",").each do |class_name|
 
     unless excluded_classes_for_carrenza.include? class_name
       context 'in Carrenza' do
+        let(:facts) do
+          base_facts.merge({ :aws_migration => false })
+        end
         let(:hiera_config) { carrenza_hieradata_file_path }
 
         it "should compile" do
@@ -86,6 +87,9 @@ ENV.fetch('classes').split(",").each do |class_name|
 
     unless excluded_classes_for_aws.include? class_name
       context 'in AWS' do
+        let(:facts) do
+          base_facts.merge({ :aws_migration => true })
+        end
         let(:hiera_config) { carrenza_hieradata_file_path }
 
         it "should compile" do

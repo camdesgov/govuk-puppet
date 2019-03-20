@@ -29,10 +29,20 @@ aws_hieradata_file_path = temporary_hiera_file_for('hiera_aws.yml')
 
 excluded_classes_for_carrenza = [
   "content_data_api_db_admin",
+  "db_admin",
+  "email_alert_api_db_admin",
+  "publishing_api_db_admin",
+  "transition_db_admin",
+  "warehouse_db_admin",
 ]
 
 excluded_classes_for_aws = [
   "email_alert_api_postgresql",
+  "publishing_api_postgresql",
+  "transition_postgresql_master",
+  "transition_postgresql_primary",
+  "transition_postgresql_slave",
+  "transition_postgresql_standby",
 ]
 
 ENV.fetch('classes').split(",").each do |class_name|

@@ -24,15 +24,19 @@ def temporary_hiera_file_for(hiera_yml_name)
   temporary_hiera_file.path
 end
 
-excluded_classes = [
-  "email_alert_api_postgresql",
+carrenza_hieradata_file_path = temporary_hiera_file_for('hiera.yml')
+aws_hieradata_file_path = temporary_hiera_file_for('hiera_aws.yml')
+
+excluded_classes_for_carrenza = [
   "content_data_api_db_admin",
+]
+
+excluded_classes_for_aws = [
+  "email_alert_api_postgresql",
 ]
 
 ENV.fetch('classes').split(",").each do |class_name|
   node_hostname = class_name.tr("_", "-")
-
-  next if excluded_classes.include?(class_name)
 
   describe "govuk::node::s_#{class_name}", :type => :class do
     let(:node) { "#{node_hostname}-1.example.com" }
@@ -48,8 +52,6 @@ ENV.fetch('classes').split(",").each do |class_name|
       }
     end
 
-    let(:hiera_config) { temporary_hiera_file_for('hiera.yml') }
-
     # Pull in some required bits from top-level site.pp
     let(:pre_condition) do
       <<-EOT
@@ -62,8 +64,24 @@ ENV.fetch('classes').split(",").each do |class_name|
       EOT
     end
 
-    it "should compile" do
-      expect { subject.call }.not_to raise_error
+    unless excluded_classes_for_carrenza.include? class_name
+      context 'in Carrenza' do
+        let(:hiera_config) { carrenza_hieradata_file_path }
+
+        it "should compile" do
+          expect { subject.call }.not_to raise_error
+        end
+      end
+    end
+
+    unless excluded_classes_for_aws.include? class_name
+      context 'in AWS' do
+        let(:hiera_config) { carrenza_hieradata_file_path }
+
+        it "should compile" do
+          expect { subject.call }.not_to raise_error
+        end
+      end
     end
   end
 end

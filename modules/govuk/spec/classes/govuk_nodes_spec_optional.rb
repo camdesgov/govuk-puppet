@@ -8,15 +8,21 @@ require_relative '../../../../spec_helper'
 # filtering was not appropriate because the glob and loop below get
 # eagerly evaluated.
 
-standard_hiera_config = YAML.load_file(File.expand_path("../../../../../hiera.yml", __FILE__))
+def temporary_hiera_file_for(hiera_yml_name)
+  standard_hiera_config = YAML.load_file(
+    File.expand_path("../../../../../#{hiera_yml_name}", __FILE__)
+  )
 
-standard_hiera_config[:yaml][:datadir] = 'hieradata'
-standard_hiera_config[:eyaml][:datadir] = 'hieradata'
-standard_hiera_config[:eyaml][:gpg_gnupghome] = 'gpg'
+  standard_hiera_config[:yaml][:datadir] = 'hieradata'
+  standard_hiera_config[:eyaml][:datadir] = 'hieradata'
+  standard_hiera_config[:eyaml][:gpg_gnupghome] = 'gpg'
 
-temporary_hiera_file = Tempfile.new('hiera_yml')
-temporary_hiera_file.write(standard_hiera_config.to_yaml)
-temporary_hiera_file.close
+  temporary_hiera_file = Tempfile.new('hiera_yml')
+  temporary_hiera_file.write(standard_hiera_config.to_yaml)
+  temporary_hiera_file.close
+
+  temporary_hiera_file.path
+end
 
 excluded_classes = [
   "email_alert_api_postgresql",
@@ -42,7 +48,7 @@ ENV.fetch('classes').split(",").each do |class_name|
       }
     end
 
-    let(:hiera_config) { temporary_hiera_file.path }
+    let(:hiera_config) { temporary_hiera_file_for('hiera.yml') }
 
     # Pull in some required bits from top-level site.pp
     let(:pre_condition) do
